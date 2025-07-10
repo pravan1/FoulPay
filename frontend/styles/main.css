@@ -1,0 +1,345 @@
+
+* FoulPay – Apple-style full-page layout with green-black gradient and glowing UI */
+
+/* Global styling */
+body, html, .foulpay-app-bg {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  background: #0b0f0c;
+  color: #e9ffe9;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Layout background */
+.foulpay-app-bg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0b0f0c 0%, #0f3d2e 60%, #1db954 100%);
+  padding: 3rem 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Main container now full width */
+.foulpay-app-container {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  background: transparent;
+  padding: 0 2rem;
+  box-sizing: border-box;
+}
+
+/* Title */
+.foulpay-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #b2ffb2;
+  text-shadow: 0 0 12px #1db954;
+}
+
+/* Description section */
+.foulpay-description {
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 900px;
+  margin: 0 auto;
+  color: #eaffea;
+}
+
+/* Informational cards */
+.foulpay-risk-info,
+.foulpay-field-info {
+  font-size: 1rem;
+  max-width: 900px;
+  width: 100%;
+  margin: 1.5rem auto;
+  padding: 1.2rem 1rem;
+  border-left: 4px solid #1db954;
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(29, 185, 84, 0.2);
+}
+
+.foulpay-risk-info h3,
+.foulpay-field-info h3 {
+  font-size: 1.2rem;
+  color: #b2ffb2;
+  margin-bottom: 0.8rem;
+}
+
+.foulpay-risk-info ul,
+.foulpay-field-info ul {
+  list-style-type: disc;
+  padding-left: 1.4rem;
+  color: #d6ffd6;
+}
+
+/* Form styling */
+.foulpay-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.foulpay-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.foulpay-form label {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #a0f2a0;
+  margin-bottom: 0.2rem;
+}
+
+.foulpay-form input {
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #1db954;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  background: #ffffff !important;
+  color: #111 !important;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.foulpay-form input:focus {
+  border-color: #34ff90;
+}
+
+/* Prevent autofill yellow style */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #111 !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* CTA button with glow */
+.foulpay-btn {
+  max-width: 280px;
+  align-self: center;
+  margin-top: 0.7rem;
+  padding: 1.2rem 0;
+  font-size: 1.4rem;
+  width: 100%;
+  background: linear-gradient(90deg, #00c851, #007e33);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 0 14px #00ff7f;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s ease-in-out, box-shadow 0.3s;
+}
+
+.foulpay-btn:hover {
+  background: linear-gradient(90deg, #007e33, #00c851);
+  transform: translateY(-2px);
+  box-shadow: 0 0 22px #00ff7f;
+}
+
+/* Error message */
+.foulpay-error {
+  color: #ff6b6b;
+  font-size: 1rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* Score output box */
+.foulpay-score-container {
+  background: transparent;
+  border: 2px solid rgba(0, 255, 128, 0.3);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 0 12px rgba(0,255,128,0.15);
+}
+
+.foulpay-score-label {
+  font-size: 1.2rem;
+  color: #88ff88;
+  margin-bottom: 0.5rem;
+}
+
+.foulpay-score-value {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: #1db954;
+  text-shadow: 0 0 10px #1db954;
+}
+
+foulpay-score-interpretation {
+  font-size: 1.2rem;
+  color: #c4f8d4;
+  text-align: center;
+  margin-top: 0.2rem;
+}
+
+/* Logo / Image */
+img {
+  max-width: 100%;
+  filter: brightness(1.15) contrast(1.1);
+  border-radius: 12px;
+}
+
+/* Responsive for mobile */
+@media (max-width: 600px) {
+  .foulpay-app-container {
+    padding: 0 1rem;
+  }
+  .foulpay-title {
+    font-size: 2rem;
+  }
+  .foulpay-btn {
+  max-width: 280px;
+  align-self: center;
+    font-size: 1.2rem;
+  }
+  .foulpay-description,
+  .foulpay-risk-info,
+  .foulpay-field-info {
+    padding: 1rem;
+  }
+}
+
+/* Loading Screen */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background: #0b0f0c;
+  color: #b2ffb2;
+  font-family: 'SF Pro Display', sans-serif;
+  text-align: center;
+  padding: 2rem;
+}
+
+.loading-bar-container {
+  width: 80%;
+  max-width: 400px;
+  height: 10px;
+  background: #222;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.loading-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #00c851, #1db954);
+  width: 0%;
+  transition: width 0.3s ease-out;
+}
+
+.loading-text {
+  font-size: 1.2rem;
+  color: #eaffea;
+}
+/* Fullscreen background with gradient */
+.foulpay-login-background {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #0b0f0c 0%, #0f3d2e 60%, #1db954 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login-fullscreen-center {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0b0f0c 0%, #0f3d2e 60%, #1db954 100%);
+}
+.login-black-box {
+  background-color: rgba(0, 0, 0, 0.8); /* deep black with transparency */
+  padding: 3rem 4rem;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 255, 128, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 500px;
+  width: 90%;
+}
+/* Login Button Styling */
+.foulpay-login-btn {
+  max-width: 260px;
+  padding: 1rem 0;
+  font-size: 1.2rem;
+  background: linear-gradient(90deg, #00c851, #007e33);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 0 12px #00ff7f;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s ease-in-out, box-shadow 0.3s;
+  text-align: center;
+}
+
+.foulpay-login-btn:hover {
+  background: linear-gradient(90deg, #007e33, #00c851);
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px #00ff7f;
+}
+.logout-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  z-index: 1000;
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: transparent;
+  border: 2px solid #1db954;
+  color: #b2ffb2;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: rgba(29, 185, 84, 0.2);
+  color: #ffffff;
+  border-color: #00ff7f;
+}
+/* Hover effect for informational containers */
+.foulpay-risk-info:hover,
+.foulpay-field-info:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left-color: #34ff90;
+  box-shadow: 0 0 18px rgba(0, 255, 128, 0.25);
+  cursor: pointer;
+  transform: translateY(-2px);
+  transition: all 0.2s ease-in-out;
+}
