@@ -1,0 +1,237 @@
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier, IsolationForest
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, roc_auc_score
+import xgboost as xgb
+import joblib
+import os
+from datetime import datetime, time
+from typing import Dict, Any
+import warnings
+warnings.filterwarnings('ignore')
+
+class FraudDetector:
+    def __init__(self):
+        self.supervised_model = None
+        self.anomaly_detector = None
+        self.scaler = StandardScaler()
+        self.label_encoders = {}
+        self.models_loaded = False
+        self.feature_columns = [
+            'amount', 'hour', 'account_age', 'location_encoded', 
+            'merchant_encoded', 'device_encoded', 'amount_log',
+            'is_weekend', 'is_night', 'amount_zscore'
+        ]
+        
+    def load_models(self):
+        """Load pre-trained models or create new ones with synthetic data"""
+        try:
+            # Try to load existing models
+            if os.path.exists('ml_models/supervised_model.pkl'):
+                self.supervised_model = joblib.load('ml_models/supervised_model.pkl')
+                self.anomaly_detector = joblib.load('ml_models/anomaly_detector.pkl')
+                self.scaler = joblib.load('ml_models/scaler.pkl')
+                self.label_encoders = joblib.load('ml_models/label_encoders.pkl')
+                print("Loaded existing models")
+            else:
+                # Create and train new models with synthetic data
+                self._create_synthetic_data_and_train()
+                print("Created new models with synthetic data")
+            
+            self.models_loaded = True
+            
+        except Exception as e:
+            print(f"Error loading models: {e}")
+            # Fallback: create simple models
+            self._create_simple_models()
+            self.models_loaded = True
+    
+    def _create_synthetic_data_and_train(self):
+        """Create synthetic fraud detection dataset and train models"""
+        np.random.seed(42)
+        n_samples = 10000
+        
+        # Generate synthetic transaction data
+        data = {
+            'amount': np.random.lognormal(3, 1.5, n_samples),
+            'hour': np.random.randint(0, 24, n_samples),
+            'account_age': np.random.randint(1, 120, n_samples),
+            'location': np.random.choice(['NY', 'CA', 'TX', 'FL', 'WA', 'Other'], n_samples),
+            'merchant': np.random.choice(['Amazon', 'Walmart', 'Target', 'Gas_Station', 'ATM', 'Online', 'Other'], n_samples),
+            'device': np.random.choice(['Mobile', 'Desktop', 'Tablet', 'ATM', 'POS'], n_samples),
+        }
+        
+        df = pd.DataFrame(data)
+        
+        # Create fraud labels (5% fraud rate)
+        fraud_probability = 0.05
+        
+        # Higher probability of fraud for:
+        # - Very high amounts (>$5000)
+        # - Night transactions (11PM - 5AM)
+        # - New accounts (<3 months)
+        # - ATM transactions with high amounts
+        fraud_score = (
+            (df['amount'] > 5000).astype(int) * 0.3 +
+            ((df['hour'] >= 23) | (df['hour'] <= 5)).astype(int) * 0.2 +
+            (df['account_age'] < 3).astype(int) * 0.2 +
+            ((df['device'] == 'ATM') & (df['amount'] > 1000)).astype(int) * 0.3 +
+            np.random.random(n_samples) * 0.4
+        )
+        
+        df['is_fraud'] = (fraud_score > 0.6).astype(int)
+        
+        # Prepare features
+        df = self._prepare_features_dataframe(df)
+        
+        # Split data
+        X = df[self.feature_columns]
+        y = df['is_fraud']
+        
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42, stratify=y
+        )
+        
+        # Scale features
+        X_train_scaled = self.scaler.fit_transform(X_train)
+        X_test_scaled = self.scaler.transform(X_test)
+        
+        # Train supervised model (XGBoost)
+        self.supervised_model = xgb.XGBClassifier(
+            n_estimators=100,
+            max_depth=6,
+            learning_rate=0.1,
+            random_state=42
+        )
+        self.supervised_model.fit(X_train_scaled, y_train)
+        
+        # Train anomaly detector on normal transactions only
+        normal_data = X_train_scaled[y_train == 0]
+        self.anomaly_detector = IsolationForest(
+            contamination=0.1,
+            random_state=42,
+            n_estimators=100
+        )
+        self.anomaly_detector.fit(normal_data)
+        
+        # Evaluate models
+        y_pred = self.supervised_model.predict(X_test_scaled)
+        y_proba = self.supervised_model.predict_proba(X_test_scaled)[:, 1]
+        
+        print(f"Supervised Model AUC: {roc_auc_score(y_test, y_proba):.3f}")
+        print(f"Classification Report:")
+        print(classification_report(y_test, y_pred))
+        
+        # Save models
+        os.makedirs('ml_models', exist_ok=True)
+        joblib.dump(self.supervised_model, 'ml_models/supervised_model.pkl')
+        joblib.dump(self.anomaly_detector, 'ml_models/anomaly_detector.pkl')
+        joblib.dump(self.scaler, 'ml_models/scaler.pkl')
+        joblib.dump(self.label_encoders, 'ml_models/label_encoders.pkl')
+    
+    def _create_simple_models(self):
+        """Create simple fallback models"""
+        # Simple supervised model
+        self.supervised_model = RandomForestClassifier(n_estimators=10, random_state=42)
+        
+        # Simple anomaly detector
+        self.anomaly_detector = IsolationForest(contamination=0.1, random_state=42)
+        
+        # Create dummy training data
+        X_dummy = np.random.random((100, len(self.feature_columns)))
+        y_dummy = np.random.choice([0, 1], 100, p=[0.95, 0.05])
+        
+        self.scaler.fit(X_dummy)
+        X_scaled = self.scaler.transform(X_dummy)
+        
+        self.supervised_model.fit(X_scaled, y_dummy)
+        self.anomaly_detector.fit(X_scaled[y_dummy == 0])
+    
+    def _prepare_features_dataframe(self, df):
+        """Prepare features for a dataframe"""
+        # Encode categorical variables
+        for col in ['location', 'merchant', 'device']:
+            if col not in self.label_encoders:
+                self.label_encoders[col] = LabelEncoder()
+                df[f'{col}_encoded'] = self.label_encoders[col].fit_transform(df[col].astype(str))
+            else:
+                # Handle unseen categories
+                seen_categories = self.label_encoders[col].classes_
+                df[col] = df[col].astype(str)
+                df[col] = df[col].apply(lambda x: x if x in seen_categories else 'Other')
+                df[f'{col}_encoded'] = self.label_encoders[col].transform(df[col])
+        
+        # Feature engineering
+        df['amount_log'] = np.log1p(df['amount'])
+        df['is_weekend'] = pd.to_datetime(df.get('timestamp', datetime.now())).dt.dayofweek.isin([5, 6]).astype(int) if 'timestamp' in df else 0
+        df['is_night'] = ((df['hour'] >= 23) | (df['hour'] <= 5)).astype(int)
+        df['amount_zscore'] = (df['amount'] - df['amount'].mean()) / df['amount'].std()
+        
+        return df
+    
+    def prepare_features(self, transaction):
+        """Convert transaction object to feature vector"""
+        # Convert time string to hour
+        try:
+            time_obj = datetime.strptime(transaction.time, '%H:%M').time()
+            hour = time_obj.hour
+        except:
+            hour = 12  # default to noon if parsing fails
+        
+        # Create dataframe
+        df = pd.DataFrame([{
+            'amount': transaction.amount,
+            'hour': hour,
+            'account_age': transaction.account_age,
+            'location': transaction.location,
+            'merchant': transaction.merchant,
+            'device': transaction.device
+        }])
+        
+        # Prepare features
+        df = self._prepare_features_dataframe(df)
+        
+        # Return feature vector
+        return df[self.feature_columns].values[0]
+    
+    def predict(self, features):
+        """Make predictions using ensemble of models"""
+        if not self.models_loaded:
+            raise Exception("Models not loaded")
+        
+        # Reshape features for single prediction
+        features_scaled = self.scaler.transform([features])
+        
+        # Supervised model prediction
+        fraud_proba = self.supervised_model.predict_proba(features_scaled)[0][1]
+        fraud_pred = self.supervised_model.predict(features_scaled)[0]
+        
+        # Anomaly detection
+        anomaly_score = self.anomaly_detector.decision_function(features_scaled)[0]
+        is_anomaly = self.anomaly_detector.predict(features_scaled)[0] == -1
+        
+        return {
+            'fraud_probability': float(fraud_proba),
+            'fraud_prediction': int(fraud_pred),
+            'anomaly_score': float(anomaly_score),
+            'anomaly': bool(is_anomaly),
+            'confidence': float(max(fraud_proba, 1 - fraud_proba))
+        }
+    
+    def calculate_risk_score(self, predictions):
+        """Calculate ensemble risk score (0-100)"""
+        fraud_prob = predictions['fraud_probability']
+        anomaly_weight = 0.3 if predictions['anomaly'] else 0
+        
+        # Ensemble score
+        risk_score = (fraud_prob * 0.7 + anomaly_weight) * 100
+        
+        return min(100, max(0, risk_score))
+    
+    def retrain_models(self):
+        """Retrain models with new feedback data"""
+        # This would integrate with the database to get new labeled data
+        print("Model retraining triggered - implement with database integration")
+        pass

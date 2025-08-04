@@ -49,6 +49,141 @@ body, html, .foulpay-app-bg {
   text-shadow: 0 0 12px #1db954;
 }
 
+/* Enhanced Score Display Styles */
+.foulpay-score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.foulpay-risk-level {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.foulpay-score-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.foulpay-score-max {
+  font-size: 1.5rem;
+  color: #888;
+  margin-left: 0.2rem;
+}
+
+.foulpay-score-details {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+  backdrop-filter: blur(10px);
+}
+
+.foulpay-detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.foulpay-detail-label {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.foulpay-detail-value {
+  color: #1db954;
+  font-weight: 600;
+}
+
+.foulpay-anomaly-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  background: rgba(255, 156, 0, 0.1);
+  border: 1px solid rgba(255, 156, 0, 0.3);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  color: #ff9c00;
+  font-size: 0.9rem;
+}
+
+.foulpay-anomaly-icon {
+  font-size: 1.1rem;
+}
+
+.foulpay-feedback-section {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.foulpay-feedback-label {
+  margin-bottom: 1rem;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.foulpay-feedback-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.foulpay-feedback-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.foulpay-feedback-fraud {
+  background: rgba(255, 59, 48, 0.2);
+  color: #ff3b30;
+  border: 1px solid rgba(255, 59, 48, 0.5);
+}
+
+.foulpay-feedback-fraud:hover {
+  background: rgba(255, 59, 48, 0.3);
+  transform: translateY(-2px);
+}
+
+.foulpay-feedback-legitimate {
+  background: rgba(29, 185, 84, 0.2);
+  color: #1db954;
+  border: 1px solid rgba(29, 185, 84, 0.5);
+}
+
+.foulpay-feedback-legitimate:hover {
+  background: rgba(29, 185, 84, 0.3);
+  transform: translateY(-2px);
+}
+
+.foulpay-feedback-thanks {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(29, 185, 84, 0.1);
+  border: 1px solid rgba(29, 185, 84, 0.3);
+  border-radius: 8px;
+  color: #1db954;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 /* Description section */
 .foulpay-description {
   text-align: center;

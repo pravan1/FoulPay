@@ -58,6 +58,9 @@ function AppRoutes({ score, interpretation, onSubmit, onBack }) {
                   <ScoreDisplay
                     score={score}
                     interpretation={interpretation}
+                    confidence={transactionData?.confidence || 0.85}
+                    anomaly_detected={transactionData?.anomaly_detected || false}
+                    transaction_id={transactionData?.transaction_id}
                     onBack={onBack}
                   />
                 )}
@@ -90,6 +93,7 @@ function AppRoutes({ score, interpretation, onSubmit, onBack }) {
 function App() {
   const [score, setScore] = useState(null);
   const [interpretation, setInterpretation] = useState('');
+  const [transactionData, setTransactionData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -132,6 +136,7 @@ function App() {
       const data = await response.json();
       setScore(data.risk_score);
       setInterpretation(data.interpretation);
+      setTransactionData(data); // Store full response data
     } catch (error) {
       console.error('Error calling prediction API:', error);
       const simulatedScore = Math.floor(Math.random() * 101);
@@ -143,6 +148,7 @@ function App() {
   const handleReset = () => {
     setScore(null);
     setInterpretation('');
+    setTransactionData(null);
   };
 
   if (loading) return <LoadingScreen />;
