@@ -6,7 +6,7 @@ import numpy as np
 from datetime import datetime
 import joblib
 import os
-from typing import Optional
+from typing import Optional, Dict
 from ml_models.fraud_detector import FraudDetector
 from database.db_manager import DatabaseManager
 from monitoring.real_time_monitor import monitor
@@ -60,14 +60,14 @@ async def predict_fraud(transaction: Transaction):
         # Convert transaction to feature vector
         features = fraud_detector.prepare_features(transaction)
         
-        # Get predictions from multiple models
-        predictions = fraud_detector.predict(features)
+        # Get enhanced predictions using credit card fraud analysis
+        predictions = fraud_detector.predict_with_credit_card_analysis(transaction)
         
         # Calculate ensemble risk score (0-100)
         risk_score = fraud_detector.calculate_risk_score(predictions)
         
-        # Generate interpretation
-        interpretation = get_interpretation(risk_score)
+        # Generate detailed interpretation
+        interpretation = get_detailed_interpretation(risk_score, predictions)
         
         # Store transaction in database
         transaction_id = await db_manager.store_transaction({
@@ -82,7 +82,12 @@ async def predict_fraud(transaction: Transaction):
             "risk_score": int(risk_score),
             "interpretation": interpretation,
             "confidence": predictions.get("confidence", 0.85),
-            "anomaly_detected": predictions.get("anomaly", False)
+            "anomaly_detected": predictions.get("anomaly", False),
+            "risk_factors": predictions.get("risk_factors", []),
+            "risk_level": predictions.get("risk_level", "UNKNOWN"),
+            "recommended_action": predictions.get("recommended_action", "REVIEW"),
+            "requires_3ds": predictions.get("requires_3ds", False),
+            "requires_manual_review": predictions.get("requires_manual_review", False)
         }
         
     except Exception as e:
@@ -148,6 +153,17 @@ def get_interpretation(score: float) -> str:
         return "Low-medium risk: Minor anomalies detected but transaction appears mostly normal."
     else:
         return "Low risk: Transaction appears normal with standard patterns."
+
+def get_detailed_interpretation(score: float, predictions: Dict) -> str:
+    """Generate detailed interpretation based on risk factors"""
+    base_interpretation = get_interpretation(score)
+    
+    risk_factors = predictions.get("risk_factors", [])
+    if risk_factors:
+        factors_text = ". Key concerns: " + ", ".join(risk_factors[:3])
+        return base_interpretation + factors_text
+    
+    return base_interpretation
 
 if __name__ == "__main__":
     import uvicorn

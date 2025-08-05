@@ -11,6 +11,7 @@ from datetime import datetime, time
 from typing import Dict, Any
 import warnings
 warnings.filterwarnings('ignore')
+from .credit_card_fraud_detector import CreditCardFraudDetector
 
 class FraudDetector:
     def __init__(self):
@@ -24,12 +25,20 @@ class FraudDetector:
             'merchant_encoded', 'device_encoded', 'amount_log',
             'is_weekend', 'is_night', 'amount_zscore'
         ]
+        # Initialize credit card fraud detector
+        self.cc_fraud_detector = CreditCardFraudDetector()
         
     def load_models(self):
         """Load pre-trained models or create new ones with synthetic data"""
         try:
-            # Try to load existing models
-            if os.path.exists('ml_models/supervised_model.pkl'):
+            # Try to load the newly trained models
+            if os.path.exists('ml_models/xgboost_model.pkl'):
+                self.supervised_model = joblib.load('ml_models/xgboost_model.pkl')
+                self.anomaly_detector = joblib.load('ml_models/isolation_forest_model.pkl')
+                self.scaler = joblib.load('ml_models/scaler.pkl')
+                self.label_encoders = joblib.load('ml_models/label_encoders.pkl')
+                print("Loaded trained XGBoost and Isolation Forest models")
+            elif os.path.exists('ml_models/supervised_model.pkl'):
                 self.supervised_model = joblib.load('ml_models/supervised_model.pkl')
                 self.anomaly_detector = joblib.load('ml_models/anomaly_detector.pkl')
                 self.scaler = joblib.load('ml_models/scaler.pkl')
@@ -219,6 +228,40 @@ class FraudDetector:
             'anomaly': bool(is_anomaly),
             'confidence': float(max(fraud_proba, 1 - fraud_proba))
         }
+    
+    def predict_with_credit_card_analysis(self, transaction):
+        """Enhanced prediction using credit card fraud patterns"""
+        # Get credit card specific risk assessment
+        transaction_dict = {
+            'amount': transaction.amount,
+            'time': transaction.time,
+            'location': transaction.location,
+            'merchant': transaction.merchant,
+            'device': transaction.device,
+            'account_age': transaction.account_age
+        }
+        
+        cc_risk_assessment = self.cc_fraud_detector.get_risk_score(transaction_dict)
+        
+        # Get traditional ML predictions
+        features = self.prepare_features(transaction)
+        ml_predictions = self.predict(features)
+        
+        # Combine both approaches
+        combined_predictions = {
+            'fraud_probability': cc_risk_assessment['fraud_probability'],
+            'fraud_prediction': 1 if cc_risk_assessment['risk_score'] > 60 else 0,
+            'anomaly_score': ml_predictions['anomaly_score'],
+            'anomaly': ml_predictions['anomaly'],
+            'confidence': cc_risk_assessment['confidence'],
+            'risk_factors': cc_risk_assessment['risk_factors'],
+            'risk_level': cc_risk_assessment['risk_level'],
+            'recommended_action': cc_risk_assessment['recommended_action'],
+            'requires_3ds': cc_risk_assessment['requires_3ds'],
+            'requires_manual_review': cc_risk_assessment['requires_manual_review']
+        }
+        
+        return combined_predictions
     
     def calculate_risk_score(self, predictions):
         """Calculate ensemble risk score (0-100)"""

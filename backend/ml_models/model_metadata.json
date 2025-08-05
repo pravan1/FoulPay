@@ -1,0 +1,27 @@
+{
+  "training_date": "2025-08-04T19:29:45.162156",
+  "models": [
+    "xgboost",
+    "random_forest",
+    "isolation_forest"
+  ],
+  "features": [
+    "amount",
+    "amount_log",
+    "amount_squared",
+    "amount_sqrt",
+    "hour",
+    "day_of_week",
+    "is_weekend",
+    "is_night",
+    "account_age_months",
+    "previous_transactions",
+    "days_since_last_transaction",
+    "merchant_category_encoded",
+    "location_type_encoded",
+    "device_type_encoded",
+    "high_risk_merchant",
+    "new_account_high_amount",
+    "low_history_high_amount"
+  ]
+}
