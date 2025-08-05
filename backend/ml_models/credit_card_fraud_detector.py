@@ -291,21 +291,15 @@ class CreditCardFraudDetector:
         # Convert to 0-100 risk score
         risk_score = int(fraud_result['probability'] * 100)
         
-        # Determine risk level
-        if risk_score >= 80:
-            risk_level = "CRITICAL"
-            action = "BLOCK"
-        elif risk_score >= 60:
+        # Determine risk level based on new thresholds
+        if risk_score > 80:
             risk_level = "HIGH"
-            action = "MANUAL_REVIEW"
-        elif risk_score >= 40:
+            action = "BLOCK"
+        elif risk_score > 50:
             risk_level = "MEDIUM"
-            action = "ADDITIONAL_AUTH"
-        elif risk_score >= 20:
-            risk_level = "LOW"
-            action = "MONITOR"
+            action = "MANUAL_REVIEW"
         else:
-            risk_level = "MINIMAL"
+            risk_level = "LOW"
             action = "APPROVE"
         
         return {

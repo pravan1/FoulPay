@@ -4,18 +4,18 @@ import '../styles/main.css';
 export default function ScoreDisplay({ score, interpretation, confidence, anomaly_detected, transaction_id, risk_factors, risk_level, recommended_action, requires_3ds, requires_manual_review }) {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   
-  let color = '#1ecb5a';
+  let color = '#1ecb5a';  // Green for low risk
   let displayRiskLevel = risk_level || 'LOW';
   
   if (score > 80) {
-    color = '#ff3b30';
+    color = '#ff3b30';  // Red for high risk
     displayRiskLevel = risk_level || 'HIGH';
   } else if (score > 50) {
-    color = '#ffcc00';
+    color = '#ffcc00';  // Yellow for medium risk
     displayRiskLevel = risk_level || 'MEDIUM';
-  } else if (score > 20) {
-    color = '#ff9500';
-    displayRiskLevel = risk_level || 'LOW-MEDIUM';
+  } else {
+    color = '#1ecb5a';  // Green for low risk (0-50)
+    displayRiskLevel = risk_level || 'LOW';
   }
   
   const actionColors = {

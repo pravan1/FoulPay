@@ -1,0 +1,9 @@
+{
+  "training_date": "2025-08-04T19:46:53.090244",
+  "models": [
+    "xgboost",
+    "random_forest",
+    "gradient_boosting"
+  ],
+  "source": "kaggle_credit_card_dataset"
+}

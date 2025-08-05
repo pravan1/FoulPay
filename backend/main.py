@@ -149,8 +149,6 @@ def get_interpretation(score: float) -> str:
         return "High risk: Transaction flagged for manual review. Multiple fraud indicators detected."
     elif score > 50:
         return "Medium risk: Unusual activity patterns detected. Monitor closely."
-    elif score > 20:
-        return "Low-medium risk: Minor anomalies detected but transaction appears mostly normal."
     else:
         return "Low risk: Transaction appears normal with standard patterns."
 

@@ -1,1 +1,133 @@
-[]
+[
+  {
+    "amount": 45.2,
+    "time": "22:00",
+    "location": "Austin",
+    "merchant": "HEB",
+    "device": "iPhone 14",
+    "account_age": 22,
+    "risk_score": 6.999999999999999,
+    "predictions": {
+      "fraud_probability": 0.1,
+      "fraud_prediction": 0,
+      "anomaly_score": 0.0,
+      "anomaly": false,
+      "confidence": 0.85,
+      "risk_factors": [
+        "Unusual transaction time"
+      ],
+      "risk_level": "MINIMAL",
+      "recommended_action": "APPROVE",
+      "requires_3ds": false,
+      "requires_manual_review": false
+    },
+    "timestamp": "2025-08-04T21:11:55.485068",
+    "transaction_id": "txn_20250804_211155_485068"
+  },
+  {
+    "amount": 2199.99,
+    "time": "03:12",
+    "location": "Moscow",
+    "merchant": "CryptoWire",
+    "device": "Windows XP",
+    "account_age": 0,
+    "risk_score": 45.49999999999999,
+    "predictions": {
+      "fraud_probability": 0.65,
+      "fraud_prediction": 1,
+      "anomaly_score": 0.0,
+      "anomaly": false,
+      "confidence": 0.9,
+      "risk_factors": [
+        "High value transaction",
+        "Unusual transaction time",
+        "New account with limited history",
+        "High transaction velocity"
+      ],
+      "risk_level": "HIGH",
+      "recommended_action": "MANUAL_REVIEW",
+      "requires_3ds": true,
+      "requires_manual_review": true
+    },
+    "timestamp": "2025-08-04T21:12:44.452926",
+    "transaction_id": "txn_20250804_211244_452926"
+  },
+  {
+    "amount": 45.2,
+    "time": "22:00",
+    "location": "Austin",
+    "merchant": "HEB",
+    "device": "iPhone 14",
+    "account_age": 24,
+    "risk_score": 6.999999999999999,
+    "predictions": {
+      "fraud_probability": 0.1,
+      "fraud_prediction": 0,
+      "anomaly_score": 0.0,
+      "anomaly": false,
+      "confidence": 0.85,
+      "risk_factors": [
+        "Unusual transaction time"
+      ],
+      "risk_level": "MINIMAL",
+      "recommended_action": "APPROVE",
+      "requires_3ds": false,
+      "requires_manual_review": false
+    },
+    "timestamp": "2025-08-04T21:13:35.829988",
+    "transaction_id": "txn_20250804_211335_829988"
+  },
+  {
+    "amount": 45.2,
+    "time": "22:00",
+    "location": "Austin",
+    "merchant": "HEB",
+    "device": "iPhone 14",
+    "account_age": 24,
+    "risk_score": 6.999999999999999,
+    "predictions": {
+      "fraud_probability": 0.1,
+      "fraud_prediction": 0,
+      "anomaly_score": 0.0,
+      "anomaly": false,
+      "confidence": 0.85,
+      "risk_factors": [
+        "Unusual transaction time"
+      ],
+      "risk_level": "LOW",
+      "recommended_action": "APPROVE",
+      "requires_3ds": false,
+      "requires_manual_review": false
+    },
+    "timestamp": "2025-08-04T21:18:40.401570",
+    "transaction_id": "txn_20250804_211840_401570"
+  },
+  {
+    "amount": 2199.99,
+    "time": "03:12",
+    "location": "Moscow",
+    "merchant": "CryptoWire",
+    "device": "Windows XP",
+    "account_age": 1,
+    "risk_score": 45.49999999999999,
+    "predictions": {
+      "fraud_probability": 0.65,
+      "fraud_prediction": 1,
+      "anomaly_score": 0.0,
+      "anomaly": false,
+      "confidence": 0.9,
+      "risk_factors": [
+        "High value transaction",
+        "Unusual transaction time",
+        "New account with limited history",
+        "High transaction velocity"
+      ],
+      "risk_level": "MEDIUM",
+      "recommended_action": "MANUAL_REVIEW",
+      "requires_3ds": true,
+      "requires_manual_review": true
+    },
+    "timestamp": "2025-08-04T21:19:33.547302",
+    "transaction_id": "txn_20250804_211933_547302"
+  }
+]

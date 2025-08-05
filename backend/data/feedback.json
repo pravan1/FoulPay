@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "transaction_id": "txn_20250804_211155_485068",
+    "is_fraud": false,
+    "user_feedback": "User marked transaction as legitimate",
+    "feedback_id": "fb_20250804_211207_909089",
+    "timestamp": "2025-08-04T21:12:07.909089"
+  },
+  {
+    "transaction_id": "txn_20250804_211933_547302",
+    "is_fraud": true,
+    "user_feedback": "User marked transaction as fraudulent",
+    "feedback_id": "fb_20250804_211943_747013",
+    "timestamp": "2025-08-04T21:19:43.747013"
+  }
+]
